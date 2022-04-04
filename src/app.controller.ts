@@ -22,8 +22,8 @@ export class AppController {
     //     });
     //   } else {
     //     res.clearCookie('token');
-        return res.render('index');
-      // }
+    return res.render('index');
+    // }
     // }
   }
 }

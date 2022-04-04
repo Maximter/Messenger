@@ -4,6 +4,6 @@ import { LoginController } from './login.controller';
 
 @Module({
   controllers: [LoginController],
-  providers: [LoginService]
+  providers: [LoginService],
 })
 export class LoginModule {}

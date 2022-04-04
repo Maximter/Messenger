@@ -8,7 +8,12 @@ import { SignupModule } from './signup/signup.module';
 import { User } from 'entity/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), TypeOrmModule.forFeature([User]), LoginModule, SignupModule],
+  imports: [
+    TypeOrmModule.forRoot(),
+    TypeOrmModule.forFeature([User]),
+    LoginModule,
+    SignupModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
