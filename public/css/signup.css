@@ -1,0 +1,27 @@
+.circle {
+    width: 2534px;
+    height: 2534px;
+    border-radius: 50%;
+}
+@keyframes fadeCircle {
+    0% {
+        width: 2534px;
+        height: 2534px;
+    }
+    25% {
+        width: 2000px;
+        height: 2000px;
+    }
+    50% {
+        width: 1500px;
+        height: 1500px;
+    }
+    75% {
+        width: 1000px;
+        height: 1000px;
+    }
+    100% {
+        width: 700px;
+        height: 700px;
+    }
+}

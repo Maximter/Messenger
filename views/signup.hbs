@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="./css/login-signup.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/signup.css"/>
+    <title>Login</title>
+  </head>
+  <body>
+<canvas class= "background"></canvas>
+
+<div class="circle"></div>
+<div class="register-form-container">
+    <form method="post">
+        <h1 class="form-title">
+            Регистрация
+        </h1>
+        <div class="form-fields">
+            <div class="form-field">
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="form-field">
+                <input type="text" name="name" placeholder="Имя" required>
+            </div>
+            <div class="form-field">
+                <input type="text" name="lastname" placeholder="Фамилия" required>
+            </div>
+            <div class="form-field">
+                <input type="password" name="password" placeholder="Пароль" required>
+            </div>
+        </div>
+        <div class="form-buttons">
+            <button class="button">Регистрация</button>
+        </div>
+    </form>
+    <p class="another-page">Уже есть аккаунт? Войдите</p>
+    <form action="/login">
+        <button class="button">Войти</button>
+    </form>
+</div>
+
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.3/particles.min.js"></script>
+    <script src = "./js/create-particles.js"></script>
+</body>
+</html>
