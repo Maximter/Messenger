@@ -8,6 +8,7 @@ export class SignupController {
 
   @Get()
   async renderLogin(@Req() req, @Res() res: Response) {
+    res.clearCookie('token_rf');
     return res.render('signup');
   }
 }
