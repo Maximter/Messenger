@@ -9,5 +9,5 @@ import { Token } from 'entity/token.entity';
   imports: [TypeOrmModule.forFeature([User, Token])],
   controllers: [LoginController],
   providers: [LoginService],
-}) 
+})
 export class LoginModule {}

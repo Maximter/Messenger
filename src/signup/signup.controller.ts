@@ -10,14 +10,15 @@ export class SignupController {
   async renderSignup(@Req() req, @Res() res: Response) {
     res.clearCookie('token_rf');
     return res.render('signup');
-  } 
+  }
 
   @Post()
   async signupUser(@Body() body: Body, @Res() res: Response) {
     let answer = await this.signupService.checkData(body);
 
-    if (answer != "okay") return res.render('signup', { error_message: answer });
-    
+    if (answer != 'okay')
+      return res.render('signup', { error_message: answer });
+
     this.signupService.signup(body);
     return res.redirect('/login');
   }

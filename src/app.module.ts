@@ -7,8 +7,7 @@ import { AppService } from './app.service';
 import { LoginModule } from './login/login.module';
 import { SignupModule } from './signup/signup.module';
 
-
-@Module({ 
+@Module({
   imports: [
     TypeOrmModule.forRoot(),
     TypeOrmModule.forFeature([User, Token]),
@@ -19,4 +18,3 @@ import { SignupModule } from './signup/signup.module';
   providers: [AppService],
 })
 export class AppModule {}
- 
