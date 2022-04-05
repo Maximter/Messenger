@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { SignupService } from './signup.service';
 
@@ -7,8 +7,18 @@ export class SignupController {
   constructor(private readonly signupService: SignupService) {}
 
   @Get()
-  async renderLogin(@Req() req, @Res() res: Response) {
+  async renderSignup(@Req() req, @Res() res: Response) {
     res.clearCookie('token_rf');
     return res.render('signup');
+  } 
+
+  @Post()
+  async signupUser(@Body() body: Body, @Res() res: Response) {
+    let answer = await this.signupService.checkData(body);
+
+    if (answer != "okay") return res.render('signup', { error_message: answer });
+    
+    this.signupService.signup(body);
+    return res.redirect('/login');
   }
 }

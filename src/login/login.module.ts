@@ -5,5 +5,5 @@ import { LoginController } from './login.controller';
 @Module({
   controllers: [LoginController],
   providers: [LoginService],
-})
+}) 
 export class LoginModule {}

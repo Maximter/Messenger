@@ -22,9 +22,9 @@ export class User extends BaseEntity {
   @Column({ length: 65 })
   password: string;
 
-  @Column({ unique: true, length: 6 })
+  @Column({ unique: true, length: 7 })
   findCode: string;
 
-  @Column()
+  @Column({ default : 0 })
   online: number;
 }
