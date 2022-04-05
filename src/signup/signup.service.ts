@@ -16,7 +16,7 @@ export class SignupService {
 
         @InjectRepository(Token)
         private tokenRepository: Repository<Token>,
-      ) {}   
+    ) {}   
 
     async checkData (body) : Promise<String> {
         const email = body.email.trim(),
@@ -28,7 +28,7 @@ export class SignupService {
         const validNameLastname : RegExp = /^[a-zA-Zа-яА-Я]+$/
 
         if (!validEmail.test(email)) return "Введена неверная почта"
-        if (password.length < 8)  return "Введен неверный пароль"
+        if (password.length < 8)  return "Введен слишком короткий пароль"
         if (!validNameLastname.test(name) || !validNameLastname.test(lastname)) return "Имя и фамилия должны содержать только буквы"
         if (name == "" || lastname == "") return "Ошибка в имени или фамилии"
         if (name.length >= 13 || lastname.length >= 13) return "Слишком длинное имя или фамилия"
@@ -81,4 +81,3 @@ export class SignupService {
         return rs;
     }
 }
- 

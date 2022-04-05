@@ -36,5 +36,18 @@
 
     <script src = "https://cdnjs.cloudflare.com/ajax/libs/particlesjs/2.2.3/particles.min.js"></script>
     <script src = "./js/create-particles.js"></script>
+     {{#if error_message}}
+        <link href="./css/toast.min.css" rel="stylesheet">
+        <script src="./js/toast.min.js"></script>
+        <script>
+            new Toast({
+                title: 'Ошибка',
+                text: '{{error_message}}',
+                theme: 'danger',
+                autohide: true,
+                interval: 10000
+            });
+        </script>
+    {{/if}}
 </body>
 </html>

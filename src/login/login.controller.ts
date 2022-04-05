@@ -14,7 +14,11 @@ export class LoginController {
 
   @Post()
   async loginUser(@Body() body: Body, @Res() res: Response) {
-    this.loginService.checkData(body);
-    res.end();
+    const rightData : boolean = await this.loginService.checkRightData(body);
+
+    if (rightData) {
+      res.cookie('token_rf', await this.loginService.getToken(body), { httpOnly: true })
+      return res.redirect('/')
+    } else return res.render('login', { error_message: "Введена неверная почта или пароль" });
   }
 }
