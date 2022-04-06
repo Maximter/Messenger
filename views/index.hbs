@@ -1,11 +1,114 @@
-
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>App</title>
+    <title>RFeim</title>
+    <link rel="stylesheet" type="text/css" href="./css/messenger.css"/>
   </head>
   <body>
-    
+
+<!-- HEADER -->
+<header class="header">
+    <div class="messengerLogo">
+        <img src="./img/system/logo.svg" alt="RFEIM" title="RFEIM" onclick="window.location.href = '/';" style="cursor: pointer">
+        <div class="headerText" style="font-size: 20px">RFEIM</div>
+    </div>
+
+    <div id="showProfile" class="profileBlock prf">
+        <p id="nameLastname" class="nameLastname prf"></p>
+        <img src="#" id="mainAvatar" alt="Аватар" title="#" class="mainAvatar prf">
+    </div>
+</header>
+
+
+<!-- ПРОФИЛЬ -->
+<section id="profileBox" class="prf profileSection">
+    <div class="prf closeProfile">
+        <img src="./img/system/close.svg">
+        <img src="./img/system/exit.svg" onclick="window.location.href = '/login';">
+    </div>
+
+    <div class="prf mainProfileInfoBox">
+        <div class="prf profileAvatar">
+            <img class="prf" src="#" id="avatarImg">
+        </div>
+        <p class="prf profileNameLastname" id="profileNameLastname"></p>
+    </div>
+
+    <div class="prf profileFindCode">
+        <p class="prf" id="findCode">Find Code:</p>
+    </div>
+
+
+    <div class="prf changePhoto">
+        <form class="prf" method="post" enctype="multipart/form-data" action="/changeAvatar">
+            <input class="prf" type="file" name="avatar" accept=".jpeg,.jpg" style="display: block;">
+            <input class="prf" type="submit" value="Submit">
+        </form>
+    </div>
+
+    <div class="prf profileName">
+        <form action="changeName" method="post">
+            <input class="prf" value="Name" id="nameInput" name="name">
+            <input class="prf" value="Lastname" style="margin: 0 20px" id="lastnameInput" name="lastname">
+            <button class="prf" id="changeName">Изменить</button>
+        </form>
+    </div>
+
+    <div class="prf profileChangePassword">
+        <p class="prf" style="margin: 20px 0">Изменить пароль:</p>
+        <input class="prf" placeholder="Старый пароль" id="oldPassword" type="password" autocomplete="off">
+        <input class="prf" placeholder="Новый пароль" style="margin: 5px" id="newPassword" type="password" autocomplete="off">
+        <input class="prf" placeholder="Повторите новый пароль" style="margin: 5px" id="RepeatNewPassword" type="password" autocomplete="off">
+        <button class="prf" id="changePassword">Изменить</button>
+    </div>
+
+</section>
+
+
+<!-- ЧАТЫ -->
+<section>
+    <div class="chats">
+        <!-- ПОИСК -->
+        <div class="dropdown">
+            <div id="myDropdown" class="dropdown-content">
+                <input type="text" placeholder="Поиск..." id="searchInput" autocomplete="off" class="searchInput">
+                <div id="searchOutput" class="searchOutput">
+                </div>
+            </div>
+        </div>
+
+        <ul class="outputchats" id="outputConversations"></ul>
+    </div>
+
+    <div class="chatBox">
+        <div class="chatInfo" id="chatInfo">
+            <div class="chatInfoBlock">
+                <p class="chatInfoName" id="chatInfoName"></p>
+                <div >
+                    <div id="typing"></div>
+                    <div class="onlineBlock"></div>
+                    <p id="status" class="chatOnlineText"></p>
+                 </div>
+            </div>
+
+
+            <img src="#" class="chatInfoImg" id="chatInfoImg">
+        </div>
+
+        <div class="messageBox" id="messageBox">
+            <img src="./img/system/start_dialog.svg" id="start_dialog">
+            <ul class="outputmessages" id="outputMessages"></ul>
+        </div>
+
+        <div class="inputBox">
+            <input id="message" placeholder="Введите сообщение..." class="inputText" autocomplete="off">
+            <img class="imgSend" id="send" src='./img/system/send.svg'>
+        </div>
+    </div>
+</section>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./js/sockets.js"></script>
   </body>
 </html>

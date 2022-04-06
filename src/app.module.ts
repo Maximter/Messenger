@@ -4,6 +4,8 @@ import { Token } from 'entity/token.entity';
 import { User } from '../entity/user.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AppGateway } from './gateway/app.gateway';
+import { SocketService } from './gateway/app.gateway.service';
 import { LoginModule } from './login/login.module';
 import { SignupModule } from './signup/signup.module';
 
@@ -15,6 +17,6 @@ import { SignupModule } from './signup/signup.module';
     SignupModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, SocketService, AppGateway],
 })
 export class AppModule {}

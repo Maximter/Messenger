@@ -25,6 +25,6 @@ export class User extends BaseEntity {
   @Column({ unique: true, length: 7 })
   findCode: string;
 
-  @Column({ default : 0 })
-  online: number;
+  @Column({ default : 1 })
+  online: string;
 }

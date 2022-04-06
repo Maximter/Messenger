@@ -8,6 +8,9 @@ export class AppController {
 
   @Get()
   async checkAuthAndRenderPage(@Req() req, @Res() res: Response) {
+    const rightToken : boolean = await this.appService.checkToken(req);
+    
+    if (!rightToken) return res.redirect('/login');
     return res.render('index');
   }
 }
