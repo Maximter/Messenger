@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Token } from 'entity/token.entity';
 import { User } from '../entity/user.entity';
@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { AppGateway } from './gateway/app.gateway';
 import { SocketService } from './gateway/app.gateway.service';
 import { LoginModule } from './login/login.module';
+import { LoggerMiddleware } from './middleware/logger.middleware';
 import { SignupModule } from './signup/signup.module';
 
 @Module({
@@ -19,4 +20,11 @@ import { SignupModule } from './signup/signup.module';
   controllers: [AppController],
   providers: [AppService, SocketService, AppGateway],
 })
-export class AppModule {}
+
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes(AppController);
+  }
+}
