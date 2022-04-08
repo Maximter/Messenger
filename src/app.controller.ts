@@ -1,10 +1,22 @@
-import { Controller, Get, Req, Res, Render } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Res,
+  Render,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { AppService } from './app.service';
+import { FindUser } from './user/findUser';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly findUser: FindUser,
+  ) {}
 
   @Get()
   async checkAuthAndRenderPage(@Req() req, @Res() res: Response) {
@@ -15,5 +27,10 @@ export class AppController {
     const conversations: object[] = await this.appService.getConversations(req);
 
     return res.render('index', { user: user, conversations: conversations });
+  }
+
+  @Get('/findUser')
+  async sendUser(@Res() res: Response, @Query() query) {
+    res.json(await this.findUser.findUser(query.findCode));
   }
 }

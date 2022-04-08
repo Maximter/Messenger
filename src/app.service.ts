@@ -32,7 +32,7 @@ export class AppService {
       .getOne();
 
     if (tokenEntity == undefined) throw new UnauthorizedException();
-    
+
     const { password, online, ...user } = tokenEntity.user;
 
     if (await AppService.existAvatar(user.id_user)) user.avatar = user.id_user;
@@ -45,8 +45,8 @@ export class AppService {
     return [{}];
   }
 
-  static async existAvatar (id) : Promise<boolean> {
-    let exist : boolean;
+  static async existAvatar(id): Promise<boolean> {
+    let exist: boolean;
 
     await access(`./public/img/avatar/${id}.jpg`, (err) => {
       if (err) exist = false;

@@ -9,6 +9,7 @@ import { SocketService } from './gateway/app.gateway.service';
 import { LoginModule } from './login/login.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { SignupModule } from './signup/signup.module';
+import { FindUser } from './user/findUser';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { SignupModule } from './signup/signup.module';
     SignupModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SocketService, AppGateway],
+  providers: [AppService, SocketService, FindUser, AppGateway],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
