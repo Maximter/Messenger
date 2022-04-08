@@ -11,10 +11,10 @@ export class AppService {
     private tokenRepository: Repository<Token>,
   ) {}
 
-  async checkToken(req) : Promise<boolean> {
+  async checkToken(req): Promise<boolean> {
     const tokenClient = req.cookies.token_rf;
 
-    const tokenServer  = await this.tokenRepository.findOne({
+    const tokenServer = await this.tokenRepository.findOne({
       where: { token: tokenClient },
     });
 
@@ -22,22 +22,21 @@ export class AppService {
     else return true;
   }
 
-  async getUserData (req) : Promise<object> {
+  async getUserData(req): Promise<object> {
     const tokenEntity = await getConnection()
-            .getRepository(Token)
-            .createQueryBuilder('token')
-            .leftJoinAndSelect('token.user', 'user')
-            .where('token.token = :token', { token: req.cookies.token_rf })
-            .getOne();
-    
+      .getRepository(Token)
+      .createQueryBuilder('token')
+      .leftJoinAndSelect('token.user', 'user')
+      .where('token.token = :token', { token: req.cookies.token_rf })
+      .getOne();
+
     if (tokenEntity == undefined) throw new UnauthorizedException();
-          
+
     const { password, online, ...user } = tokenEntity.user;
     return user;
   }
 
-  async getConversations (req) : Promise<object[]> {
-    
-    return [{}]
+  async getConversations(req): Promise<object[]> {
+    return [{}];
   }
 }

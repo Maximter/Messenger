@@ -1,2 +1,2 @@
-const online : object = {}
+const online: object = {};
 export = online;

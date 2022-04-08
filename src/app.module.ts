@@ -20,11 +20,8 @@ import { SignupModule } from './signup/signup.module';
   controllers: [AppController],
   providers: [AppService, SocketService, AppGateway],
 })
-
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes(AppController);
+    consumer.apply(LoggerMiddleware).forRoutes(AppController);
   }
 }

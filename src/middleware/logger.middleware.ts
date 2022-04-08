@@ -1,4 +1,9 @@
-import { ForbiddenException, Injectable, NestMiddleware, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from 'entity/token.entity';
 import { Repository } from 'typeorm';
@@ -22,4 +27,3 @@ export class LoggerMiddleware implements NestMiddleware {
     else next();
   }
 }
-
