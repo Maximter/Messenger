@@ -9,8 +9,11 @@ export class AppController {
   @Get()
   async checkAuthAndRenderPage(@Req() req, @Res() res: Response) {
     const rightToken : boolean = await this.appService.checkToken(req);
-    
     if (!rightToken) return res.redirect('/login');
-    return res.render('index');
+
+    const user : object = await this.appService.getUserData(req);
+    const conversations : object[] = await this.appService.getConversations(req);
+    
+    return res.render('index', { user : user, conversations : conversations });
   }
 }

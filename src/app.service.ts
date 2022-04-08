@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from 'entity/token.entity';
-import { Repository } from 'typeorm';
+import { User } from 'entity/user.entity';
+import { getConnection, Repository } from 'typeorm';
 
 @Injectable()
 export class AppService {
@@ -19,5 +20,24 @@ export class AppService {
 
     if (tokenServer == undefined) return false;
     else return true;
+  }
+
+  async getUserData (req) : Promise<object> {
+    const tokenEntity = await getConnection()
+            .getRepository(Token)
+            .createQueryBuilder('token')
+            .leftJoinAndSelect('token.user', 'user')
+            .where('token.token = :token', { token: req.cookies.token_rf })
+            .getOne();
+    
+    if (tokenEntity == undefined) throw new UnauthorizedException();
+          
+    const { password, online, ...user } = tokenEntity.user;
+    return user;
+  }
+
+  async getConversations (req) : Promise<object[]> {
+
+    return [{}]
   }
 }

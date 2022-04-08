@@ -15,8 +15,8 @@
     </div>
 
     <div id="showProfile" class="profileBlock prf">
-        <p id="nameLastname" class="nameLastname prf"></p>
-        <img src="#" id="mainAvatar" alt="Аватар" title="#" class="mainAvatar prf">
+        <p id="nameLastname" class="nameLastname prf">{{user.name}} {{user.lastname}}</p>
+        <img src="./img/avatar/{{user.id_user}}.jpg" id="mainAvatar" alt="Аватар" title="#" class="mainAvatar prf" title="{{user.name}} {{user.lastname}}">
     </div>
 </header>
 
@@ -30,13 +30,13 @@
 
     <div class="prf mainProfileInfoBox">
         <div class="prf profileAvatar">
-            <img class="prf" src="#" id="avatarImg">
+            <img class="prf" src="./img/avatar/{{user.id_user}}.jpg" id="avatarImg">
         </div>
-        <p class="prf profileNameLastname" id="profileNameLastname"></p>
+        <p class="prf profileNameLastname" id="profileNameLastname">{{user.name}} {{user.lastname}}</p>
     </div>
 
     <div class="prf profileFindCode">
-        <p class="prf" id="findCode">Find Code:</p>
+        <p class="prf" id="findCode">Find Code: #{{user.findCode}}</p>
     </div>
 
 
@@ -49,8 +49,8 @@
 
     <div class="prf profileName">
         <form action="changeName" method="post">
-            <input class="prf" value="Name" id="nameInput" name="name">
-            <input class="prf" value="Lastname" style="margin: 0 20px" id="lastnameInput" name="lastname">
+            <input class="prf" value="Name" id="nameInput" name="name" value="{{user.name}}">
+            <input class="prf" value="Lastname" style="margin: 0 20px" id="lastnameInput" name="lastname" value="{{user.lastname}}">
             <button class="prf" id="changeName">Изменить</button>
         </form>
     </div>
