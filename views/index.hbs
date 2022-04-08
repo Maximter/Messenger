@@ -10,13 +10,13 @@
 <!-- HEADER -->
 <header class="header">
     <div class="messengerLogo">
-        <img src="./img/system/logo.svg" alt="RFEIM" title="RFEIM" onclick="window.location.href = '/';" style="cursor: pointer">
-        <div class="headerText" style="font-size: 20px">RFEIM</div>
+        <img src="./img/system/logo.svg" alt="RFeim" title="RFeim" onclick="window.location.href = '/';" style="cursor: pointer">
+        <div class="headerText" style="font-size: 20px">RFeim</div>
     </div>
 
     <div id="showProfile" class="profileBlock prf">
         <p id="nameLastname" class="nameLastname prf">{{user.name}} {{user.lastname}}</p>
-        <img src="./img/avatar/{{user.id_user}}.jpg" id="mainAvatar" alt="Аватар" title="#" class="mainAvatar prf" title="{{user.name}} {{user.lastname}}">
+        <img src="./img/avatar/{{user.avatar}}.jpg" id="mainAvatar" alt="Аватар" class="mainAvatar prf" title="{{user.name}} {{user.lastname}}">
     </div>
 </header>
 
@@ -30,7 +30,7 @@
 
     <div class="prf mainProfileInfoBox">
         <div class="prf profileAvatar">
-            <img class="prf" src="./img/avatar/{{user.id_user}}.jpg" id="avatarImg">
+            <img class="prf" src="./img/avatar/{{user.avatar}}.jpg" id="avatarImg">
         </div>
         <p class="prf profileNameLastname" id="profileNameLastname">{{user.name}} {{user.lastname}}</p>
     </div>

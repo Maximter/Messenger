@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from 'entity/token.entity';
 import { User } from 'entity/user.entity';
 import { getConnection, Repository } from 'typeorm';
+import { access, constants } from 'fs';
 
 @Injectable()
 export class AppService {
@@ -31,12 +32,27 @@ export class AppService {
       .getOne();
 
     if (tokenEntity == undefined) throw new UnauthorizedException();
-
+    
     const { password, online, ...user } = tokenEntity.user;
+
+    if (await AppService.existAvatar(user.id_user)) user.avatar = user.id_user;
+    else user.avatar = 'standard';
+
     return user;
   }
 
   async getConversations(req): Promise<object[]> {
     return [{}];
+  }
+
+  static async existAvatar (id) : Promise<boolean> {
+    let exist : boolean;
+
+    await access(`./public/img/avatar/${id}.jpg`, (err) => {
+      if (err) exist = false;
+      else exist = true;
+    });
+
+    return exist;
   }
 }

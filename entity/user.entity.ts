@@ -27,4 +27,6 @@ export class User extends BaseEntity {
 
   @Column({ default : 1 })
   online: string;
+
+  avatar ? : number | string; 
 }
