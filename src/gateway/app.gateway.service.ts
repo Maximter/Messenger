@@ -11,7 +11,7 @@ export class SocketService {
       ) {}
 
     async pushToOnline (client) : Promise<void> {
-        const token = SocketService.getToken(client);
+        const token = await SocketService.getToken(client);
         
         if (online[`${token}`] == undefined) online[`${token}`] = [client.id];
         else online[`${token}`].push(client.id);
@@ -31,7 +31,7 @@ export class SocketService {
     }
 
     async deleteFromOnline (client) : Promise<void> {
-        const token = SocketService.getToken(client);
+        const token = await SocketService.getToken(client);
         
         online[`${token}`].splice(online[`${token}`].indexOf(client.id), 1)
         if (online[`${token}`].length == 0) delete online[`${token}`];
