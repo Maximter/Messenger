@@ -2,14 +2,22 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from 'entity/token.entity';
 import { User } from 'entity/user.entity';
-import { getConnection, Repository } from 'typeorm';
+import { getConnection, getRepository, Repository } from 'typeorm';
 import { access, constants } from 'fs';
+import { Chat } from 'entity/chat.entity';
+import { ChatInfo } from 'entity/chat.info.entity';
 
 @Injectable()
 export class AppService {
   constructor(
     @InjectRepository(Token)
     private tokenRepository: Repository<Token>,
+
+    @InjectRepository(Chat)
+    private chatRepository: Repository<Chat>,
+
+    @InjectRepository(ChatInfo)
+    private chatInfoRepository: Repository<ChatInfo>,
   ) {}
 
   async checkToken(req): Promise<boolean> {
@@ -41,8 +49,30 @@ export class AppService {
     return user;
   }
 
-  async getConversations(req): Promise<object[]> {
-    return [{}];
+  async getChats(user): Promise<object[]> {
+    const chats = await this.chatRepository.find({
+      where: { member: user },
+    });
+
+    return chats;
+  }
+
+  async getChatsInfo (id_chats) : Promise<object[]> {
+    const id: number[] = [];
+
+    for (let i = 0; i < id_chats.length; i++)
+      id.push(id_chats[i].chat_id);
+
+    // const chats = await getRepository(ChatInfo)
+    //   .createQueryBuilder('chatInfo')
+    //   .where('chatInfo.chat_id IN (:...id)', { id: id })
+    //   .getMany();
+
+    // console.log(chats);
+    
+
+    // return chats
+    return [{}]
   }
 
   static async existAvatar(id): Promise<boolean> {

@@ -24,13 +24,14 @@ export class AppController {
     if (!rightToken) return res.redirect('/login');
 
     const user: object = await this.appService.getUserData(req);
-    const conversations: object[] = await this.appService.getConversations(req);
+    const id_chats: object[] = await this.appService.getChats(user);
+    const info_chats: object[] = await this.appService.getChatsInfo(id_chats);
 
-    return res.render('index', { user: user, conversations: conversations });
+    return res.render('index', { user: user, chats: info_chats });
   }
 
   @Get('/findUser')
-  async sendUser(@Res() res: Response, @Query() query) {
+  async sendUser(@Res() res: Response, @Query() query, @Param() params) {
     res.json(await this.findUser.findUser(query.findCode));
   }
 }

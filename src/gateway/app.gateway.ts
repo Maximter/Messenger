@@ -21,20 +21,23 @@ export class AppGateway
 
   private logger: Logger = new Logger('AppGateway');
 
-  @SubscribeMessage('read')
-  ahh(client: Socket, payload: string): void {
-    this.server.emit('msgToClient', payload);
+  @SubscribeMessage('sendFirstMessage')
+  async sendFirstMessage(client: Socket, payload: string): Promise<void> {
+    await this.socketService.createChat(client, payload);
+    
   }
 
-  afterInit(server: Server) {
+  afterInit(server: Server):void {
     this.logger.log('Init');
   }
 
-  handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket):void {
     this.socketService.deleteFromOnline(client);
   }
 
-  handleConnection(client: Socket) {
+  handleConnection(client: Socket):void {
     this.socketService.pushToOnline(client);
   }
 }
+
+    // this.server.emit('msgToClient', payload);

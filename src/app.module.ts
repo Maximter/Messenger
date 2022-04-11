@@ -10,13 +10,17 @@ import { LoginModule } from './login/login.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { SignupModule } from './signup/signup.module';
 import { FindUser } from './user/findUser';
+import { DialogModule } from './dialog/dialog.module';
+import { Chat } from 'entity/chat.entity';
+import { ChatInfo } from 'entity/chat.info.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
-    TypeOrmModule.forFeature([User, Token]),
+    TypeOrmModule.forFeature([User, Token, Chat, ChatInfo]),
     LoginModule,
     SignupModule,
+    DialogModule,
   ],
   controllers: [AppController],
   providers: [AppService, SocketService, FindUser, AppGateway],

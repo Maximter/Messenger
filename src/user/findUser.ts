@@ -22,7 +22,6 @@ export class FindUser {
 
     if (await AppService.existAvatar(user.id_user)) user.avatar = user.id_user;
     else user.avatar = 'standard';
-
     return user;
   }
 }

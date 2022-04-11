@@ -6,17 +6,17 @@
     <link rel="stylesheet" type="text/css" href="./css/messenger.css"/>
   </head>
   <body>
-
+ 
 <!-- HEADER -->
 <header class="header">
     <div class="messengerLogo">
-        <img src="./img/system/logo.svg" alt="RFeim" title="RFeim" onclick="window.location.href = '/';" style="cursor: pointer">
-        <div class="headerText" style="font-size: 20px">RFeim</div>
+        <img src="./img/system/logo.svg" alt="RFEIM" title="RFEIM" onclick="window.location.href = '/';" style="cursor: pointer">
+        <div class="headerText" style="font-size: 20px">RFEIM</div>
     </div>
 
     <div id="showProfile" class="profileBlock prf">
         <p id="nameLastname" class="nameLastname prf">{{user.name}} {{user.lastname}}</p>
-        <img src="./img/avatar/{{user.avatar}}.jpg" id="mainAvatar" alt="Аватар" class="mainAvatar prf" title="{{user.name}} {{user.lastname}}">
+        <img src="./img/avatar/{{user.avatar}}.jpg" id="mainAvatar" alt="Аватар" title="{{user.name}} {{user.lastname}}" class="mainAvatar prf">
     </div>
 </header>
 
@@ -49,8 +49,8 @@
 
     <div class="prf profileName">
         <form action="changeName" method="post">
-            <input class="prf" value="Name" id="nameInput" name="name" value="{{user.name}}">
-            <input class="prf" value="Lastname" style="margin: 0 20px" id="lastnameInput" name="lastname" value="{{user.lastname}}">
+            <input class="prf" value="{{user.name}}" id="nameInput" name="name">
+            <input class="prf" value="{{user.lastname}}" style="margin: 0 20px" id="lastnameInput" name="lastname">
             <button class="prf" id="changeName">Изменить</button>
         </form>
     </div>
@@ -108,8 +108,26 @@
     </div>
 </section>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="./js/sockets.js"></script>
-    <script src="./js/searching.js"></script>
+<script src="//code.jquery.com/jquery-2.0.2.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="./js/messenger_constants.js"> </script>
+<script src="./js/messenger_on_load.js"> </script>
+<script src="./js/messenger_sockets.js"> </script>
+<script src="./js/messenger.js"> </script>
+
+{{#if message}}
+    <link href="./css/toast.min.css" rel="stylesheet">
+    <script src="./js/toast.min.js"></script>
+
+    <script>
+        new Toast({
+            title: 'Ошибка',
+            text: '{{message}}',
+            theme: 'danger',
+            autohide: true,
+            interval: 10000
+        });
+    </script>
+{{/if}}
   </body>
 </html>
