@@ -49,32 +49,6 @@ export class AppService {
     return user;
   }
 
-  async getChats(user): Promise<object[]> {
-    const chats = await this.chatRepository.find({
-      where: { member: user },
-    });
-
-    return chats;
-  }
-
-  async getChatsInfo (id_chats) : Promise<object[]> {
-    const id: number[] = [];
-
-    for (let i = 0; i < id_chats.length; i++)
-      id.push(id_chats[i].chat_id);
-
-    // const chats = await getRepository(ChatInfo)
-    //   .createQueryBuilder('chatInfo')
-    //   .where('chatInfo.chat_id IN (:...id)', { id: id })
-    //   .getMany();
-
-    // console.log(chats);
-    
-
-    // return chats
-    return [{}]
-  }
-
   static async existAvatar(id): Promise<boolean> {
     let exist: boolean;
 

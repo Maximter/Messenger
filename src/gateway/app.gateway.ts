@@ -24,20 +24,19 @@ export class AppGateway
   @SubscribeMessage('sendFirstMessage')
   async sendFirstMessage(client: Socket, payload: string): Promise<void> {
     await this.socketService.createChat(client, payload);
-    
   }
 
-  afterInit(server: Server):void {
+  afterInit(server: Server): void {
     this.logger.log('Init');
   }
 
-  handleDisconnect(client: Socket):void {
+  handleDisconnect(client: Socket): void {
     this.socketService.deleteFromOnline(client);
   }
 
-  handleConnection(client: Socket):void {
+  handleConnection(client: Socket): void {
     this.socketService.pushToOnline(client);
   }
 }
 
-    // this.server.emit('msgToClient', payload);
+// this.server.emit('msgToClient', payload);

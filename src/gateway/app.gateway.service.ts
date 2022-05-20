@@ -3,9 +3,9 @@ import { Chat } from 'entity/chat.entity';
 import { ChatInfo } from 'entity/chat.info.entity';
 import { Token } from 'entity/token.entity';
 import { User } from 'entity/user.entity';
-import { getConnection, getManager, Repository } from 'typeorm';
+import { getConnection, getManager, getRepository, Repository } from 'typeorm';
 import * as online from '../online';
-import * as uuid from 'uuid'
+import * as uuid from 'uuid';
 import { UrlWithStringQuery } from 'url';
 
 export class SocketService {
@@ -60,11 +60,9 @@ export class SocketService {
     });
   }
 
-  async createChat (client, payload) : Promise<void> {
+  async createChat(client, payload): Promise<void> {
     const message = payload[0].trim();
     const id_interlocutor = payload[1];
-
-    if (SocketService.checkExistchat()) return;
 
     const token = await SocketService.getToken(client);
     const tokenEntity = await getConnection()
@@ -79,7 +77,9 @@ export class SocketService {
       where: { id_user: id_interlocutor },
     });
 
-    const chat_id : string = await uuid.v4();
+    if (this.checkExistchat(user, interlocutor)) return;
+
+    const chat_id: string = await uuid.v4();
 
     await getManager().transaction(async (transactionalEntityManager) => {
       const newChat1: Chat = this.chatRepository.create({
@@ -96,17 +96,46 @@ export class SocketService {
       await transactionalEntityManager.save(newChat2);
 
       const newChatInfo: ChatInfo = this.chatInfoRepository.create({
-        chat : chat_id,
-        last_message_content : message,
-        last_message_time : `${Date.now()}`,
-        last_message_sender : user.id_user
+        chat: chat_id,
+        last_message_content: message,
+        last_message_time: `${Date.now()}`,
+        last_message_sender: user.id_user,
       });
 
       await transactionalEntityManager.save(newChatInfo);
     });
   }
 
-  static checkExistchat () : boolean {
+  async checkExistchat(user, interlocutor): Promise<boolean> {
+    const userChats = [];
+    const userEntityChats = await this.chatRepository.find({
+      where: { member: user },
+    });
+
+    for (let i = 0; i < userEntityChats.length; i++)
+      userChats.push(userEntityChats[i].chat_id);
+
+    const membersTheChat = await getRepository(Chat)
+      .createQueryBuilder('chat')
+      .where('chat.chat_id IN (:...id)', { id: userChats })
+      .getMany();
+
+    for (let i = 0; i < membersTheChat.length; i++) {
+      const chatEntity = await getConnection()
+        .getRepository(Chat)
+        .createQueryBuilder('chat')
+        .leftJoinAndSelect('chat.member', 'member')
+        .where('chat.chat_id = :chat_id', {
+          chat_id: membersTheChat[i].chat_id,
+        })
+        .getOne();
+      console.log(chatEntity);
+    }
+
+    // if (membersTheChat[i] == interlocutor.id_user) return true
+
+    // console.log(membersTheChat);
+    console.log(interlocutor.id_user);
 
     return true;
   }

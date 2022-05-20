@@ -9,8 +9,8 @@ import { Chat } from 'entity/chat.entity';
 import { ChatInfo } from 'entity/chat.info.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Token, Chat, ChatInfo]),],
+  imports: [TypeOrmModule.forFeature([User, Token, Chat, ChatInfo])],
   controllers: [DialogController],
-  providers: [DialogService, AppService]
+  providers: [DialogService, AppService],
 })
 export class DialogModule {}

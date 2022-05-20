@@ -78,7 +78,8 @@
             </div>
         </div>
 
-        <ul class="outputchats" id="outputConversations"></ul>
+        <ul class="outputchats" id="outputChats">
+        </ul>
     </div>
 
     <div class="chatBox">
@@ -111,8 +112,9 @@
 <script src="//code.jquery.com/jquery-2.0.2.min.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script src="./js/messenger_constants.js"> </script>
-<script src="./js/messenger_on_load.js"> </script>
+<script src="./js/parseDate.js"> </script>
 <script src="./js/messenger_sockets.js"> </script>
+<script src="./js/download_chats.js"> </script>
 <script src="./js/messenger.js"> </script>
 
 {{#if message}}

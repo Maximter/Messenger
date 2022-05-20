@@ -24,10 +24,8 @@ export class AppController {
     if (!rightToken) return res.redirect('/login');
 
     const user: object = await this.appService.getUserData(req);
-    const id_chats: object[] = await this.appService.getChats(user);
-    const info_chats: object[] = await this.appService.getChatsInfo(id_chats);
 
-    return res.render('index', { user: user, chats: info_chats });
+    return res.render('index', { user: user });
   }
 
   @Get('/findUser')
