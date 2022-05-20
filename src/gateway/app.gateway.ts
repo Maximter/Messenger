@@ -26,6 +26,11 @@ export class AppGateway
     await this.socketService.createChat(client, payload);
   }
 
+  @SubscribeMessage('sendMessage')
+  async sendMessage(client: Socket, payload: string): Promise<void> {
+    await this.socketService.sendMessage(client, payload);
+  }
+
   afterInit(server: Server): void {
     this.logger.log('Init');
   }

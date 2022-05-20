@@ -7,6 +7,7 @@ import { getConnection, getManager, getRepository, Repository } from 'typeorm';
 import * as online from '../online';
 import * as uuid from 'uuid';
 import { UrlWithStringQuery } from 'url';
+import { Message } from 'entity/message.entity';
 
 export class SocketService {
   constructor(
@@ -18,14 +19,17 @@ export class SocketService {
 
     @InjectRepository(ChatInfo)
     private chatInfoRepository: Repository<ChatInfo>,
+
+    @InjectRepository(Message)
+    private messageRepository: Repository<Message>,
   ) {}
 
-  async pushToOnline(client): Promise<void> {
+  async sendMessage(client, payload): Promise<void> {
+    const message = payload[0];
+    const id_chat = payload[1];
+    const date = `${Date.now()}`;
+
     const token = await SocketService.getToken(client);
-
-    if (online[`${token}`] == undefined) online[`${token}`] = [client.id];
-    else online[`${token}`].push(client.id);
-
     const tokenEntity = await getConnection()
       .getRepository(Token)
       .createQueryBuilder('token')
@@ -33,30 +37,20 @@ export class SocketService {
       .where('token.token = :token', { token: token })
       .getOne();
 
-    const id_user = tokenEntity.user.id_user;
-    this.userRepository.save({
-      id_user: id_user,
-      online: `0`,
+    const user = tokenEntity.user;
+
+    this.chatInfoRepository.save({
+      id_chat_info: 1,
+      last_message_content: message,
+      last_message_sender: user.id_user,
+      last_message_time: date,
     });
-  }
 
-  async deleteFromOnline(client): Promise<void> {
-    const token = await SocketService.getToken(client);
-
-    online[`${token}`].splice(online[`${token}`].indexOf(client.id), 1);
-    if (online[`${token}`].length == 0) delete online[`${token}`];
-
-    const tokenEntity = await getConnection()
-      .getRepository(Token)
-      .createQueryBuilder('token')
-      .leftJoinAndSelect('token.user', 'user')
-      .where('token.token = :token', { token: token })
-      .getOne();
-
-    const id_user = tokenEntity.user.id_user;
-    this.userRepository.save({
-      id_user: id_user,
-      online: `${Date.now()}`,
+    this.messageRepository.save({
+      id_chat: id_chat,
+      content: message,
+      id_sender: user.id_user,
+      message_sent: date,
     });
   }
 
@@ -138,6 +132,46 @@ export class SocketService {
     console.log(interlocutor.id_user);
 
     return true;
+  }
+
+  async pushToOnline(client): Promise<void> {
+    const token = await SocketService.getToken(client);
+
+    if (online[`${token}`] == undefined) online[`${token}`] = [client.id];
+    else online[`${token}`].push(client.id);
+
+    const tokenEntity = await getConnection()
+      .getRepository(Token)
+      .createQueryBuilder('token')
+      .leftJoinAndSelect('token.user', 'user')
+      .where('token.token = :token', { token: token })
+      .getOne();
+
+    const id_user = tokenEntity.user.id_user;
+    this.userRepository.save({
+      id_user: id_user,
+      online: `0`,
+    });
+  }
+
+  async deleteFromOnline(client): Promise<void> {
+    const token = await SocketService.getToken(client);
+
+    online[`${token}`].splice(online[`${token}`].indexOf(client.id), 1);
+    if (online[`${token}`].length == 0) delete online[`${token}`];
+
+    const tokenEntity = await getConnection()
+      .getRepository(Token)
+      .createQueryBuilder('token')
+      .leftJoinAndSelect('token.user', 'user')
+      .where('token.token = :token', { token: token })
+      .getOne();
+
+    const id_user = tokenEntity.user.id_user;
+    this.userRepository.save({
+      id_user: id_user,
+      online: `${Date.now()}`,
+    });
   }
 
   static getToken(client): string {
