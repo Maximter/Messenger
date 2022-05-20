@@ -13,11 +13,12 @@ import { FindUser } from './user/findUser';
 import { DialogModule } from './dialog/dialog.module';
 import { Chat } from 'entity/chat.entity';
 import { ChatInfo } from 'entity/chat.info.entity';
+import { Message } from 'entity/message.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
-    TypeOrmModule.forFeature([User, Token, Chat, ChatInfo]),
+    TypeOrmModule.forFeature([User, Token, Chat, ChatInfo, Message]),
     LoginModule,
     SignupModule,
     DialogModule,

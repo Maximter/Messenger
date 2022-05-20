@@ -2,9 +2,10 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from 'entity/chat.entity';
 import { ChatInfo } from 'entity/chat.info.entity';
+import { Message } from 'entity/message.entity';
 import { Token } from 'entity/token.entity';
 import { User } from 'entity/user.entity';
-import { getConnection, getRepository, Repository } from 'typeorm';
+import { getConnection, getManager, getRepository, Repository } from 'typeorm';
 const fs = require('fs');
 
 @Injectable()
@@ -18,6 +19,9 @@ export class DialogService {
 
     @InjectRepository(Chat)
     private chatRepository: Repository<Chat>,
+
+    @InjectRepository(Message)
+    private messageRepository: Repository<Message>,
   ) {}
 
   async getUser(req): Promise<User> {
@@ -81,5 +85,18 @@ export class DialogService {
     }
 
     return chats;
+  }
+
+  async getMessages(id_chat, id_user): Promise<Message[]> {
+    const messages = await this.messageRepository.find({
+      where: { id_chat: id_chat },
+      // take : 20,
+    });
+
+    messages.forEach((element) => {
+      if (element.id_sender != id_user) delete element.id_sender;
+    });
+
+    return messages;
   }
 }

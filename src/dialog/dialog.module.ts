@@ -7,9 +7,10 @@ import { Token } from 'entity/token.entity';
 import { User } from 'entity/user.entity';
 import { Chat } from 'entity/chat.entity';
 import { ChatInfo } from 'entity/chat.info.entity';
+import { Message } from 'entity/message.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Token, Chat, ChatInfo])],
+  imports: [TypeOrmModule.forFeature([User, Token, Chat, ChatInfo, Message])],
   controllers: [DialogController],
   providers: [DialogService, AppService],
 })
