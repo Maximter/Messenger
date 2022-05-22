@@ -39,8 +39,12 @@ export class SocketService {
 
     const user = tokenEntity.user;
 
+    const ai_chat = await this.chatInfoRepository.findOne({
+      where: { chat: id_chat },
+    });
+
     this.chatInfoRepository.save({
-      id_chat_info: 1,
+      id_chat_info: ai_chat.id_chat_info,
       last_message_content: message,
       last_message_sender: user.id_user,
       last_message_time: date,

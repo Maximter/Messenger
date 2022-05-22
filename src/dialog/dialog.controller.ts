@@ -29,4 +29,13 @@ export class DialogController {
 
     res.json(messages);
   }
-}
+
+  @Get('/unread')
+  async unread(@Req() req, @Res() res: Response, @Query() query) {    
+    const user = await this.dialogService.getUser(req);
+    this.dialogService.unreadMessage(
+      req.query.id_chat,
+      user.id_user,
+    );
+  }
+} 
