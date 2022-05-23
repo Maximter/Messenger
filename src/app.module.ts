@@ -14,6 +14,7 @@ import { DialogModule } from './dialog/dialog.module';
 import { Chat } from 'entity/chat.entity';
 import { ChatInfo } from 'entity/chat.info.entity';
 import { Message } from 'entity/message.entity';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { Message } from 'entity/message.entity';
     LoginModule,
     SignupModule,
     DialogModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, SocketService, FindUser, AppGateway],
