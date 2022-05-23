@@ -30,12 +30,15 @@ export class DialogController {
     res.json(messages);
   }
 
-  @Get('/unread')
-  async unread(@Req() req, @Res() res: Response, @Query() query) {    
+  @Get('/read')
+  async read(@Req() req, @Res() res: Response, @Query() query) {
     const user = await this.dialogService.getUser(req);
-    this.dialogService.unreadMessage(
-      req.query.id_chat,
-      user.id_user,
-    );
+    this.dialogService.readMessage(req.query.id_chat, user.id_user);
   }
-} 
+
+  @Get('/unread')
+  async unread(@Req() req, @Res() res: Response, @Query() query) {
+    const user = await this.dialogService.getUser(req);
+    this.dialogService.unreadMessage(req.query.id_chat, user.id_user);
+  }
+}

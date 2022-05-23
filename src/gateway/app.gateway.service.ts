@@ -24,7 +24,7 @@ export class SocketService {
     private messageRepository: Repository<Message>,
   ) {}
 
-  async sendMessage(client, payload): Promise<void> {
+  async saveMessageToDB(client, payload): Promise<void> {
     const message = payload[0];
     const id_chat = payload[1];
     const date = `${Date.now()}`;

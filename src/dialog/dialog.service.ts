@@ -78,7 +78,7 @@ export class DialogService {
           chats[i]['lastname'] = element.member.lastname;
           chats[i]['online'] = element.member.online;
           chats[i]['avatar'] = element.member.avatar;
-          if (element.unread == 0) chats[i]['interlocutor_read'] = true
+          if (element.unread == 0) chats[i]['interlocutor_read'] = true;
           if (
             fs.existsSync(`./public/img/avatar/${element.member.id_user}.jpg`)
           ) {
@@ -104,6 +104,24 @@ export class DialogService {
     return messages;
   }
 
+  async readMessage(id_chat, id_user): Promise<void> {
+    const chatsEntity = await getConnection()
+      .getRepository(Chat)
+      .createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.member', 'member')
+      .where('chat.chat_id = :id', { id: id_chat })
+      .getMany();
+
+    chatsEntity.forEach((element) => {
+      if (element.member.id_user == id_user) {
+        this.chatRepository.save({
+          PK_id_chat: element.PK_id_chat,
+          unread: 0,
+        });
+      }
+    });
+  }
+
   async unreadMessage(id_chat, id_user): Promise<void> {
     const chatsEntity = await getConnection()
       .getRepository(Chat)
@@ -111,8 +129,8 @@ export class DialogService {
       .leftJoinAndSelect('chat.member', 'member')
       .where('chat.chat_id = :id', { id: id_chat })
       .getMany();
-      
-    chatsEntity.forEach(element => {
+
+    chatsEntity.forEach((element) => {
       if (element.member.id_user != id_user) {
         this.chatRepository.save({
           PK_id_chat: element.PK_id_chat,

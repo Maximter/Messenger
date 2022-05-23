@@ -28,7 +28,7 @@ export class AppGateway
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, payload: string): Promise<void> {
-    await this.socketService.sendMessage(client, payload);
+    await this.socketService.saveMessageToDB(client, payload);
   }
 
   afterInit(server: Server): void {
