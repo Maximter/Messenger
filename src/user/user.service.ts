@@ -54,4 +54,12 @@ export class UserService {
       password: hashPassword,
     });
   }
+
+  async change_name(user, name, lastname): Promise<void> {
+    this.userRepository.save({
+      id_user: user.id_user,
+      name: name,
+      lastname: lastname,
+    });
+  }
 }

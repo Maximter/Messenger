@@ -18,9 +18,16 @@ export class UserController {
       req.body.old_password,
     );
 
-    if (valid_password) {
+    if (valid_password)
       this.userService.change_password(user, req.body.new_password);
-      res.json('Valid');
-    } else res.json('Invalid');
+    res.json(valid_password);
+  }
+
+  @Post('/changeName')
+  async changeName(@Req() req, @Res() res: Response, @Query() query) {
+    const user = await this.userService.getUser(req);
+    this.userService.change_name(user, req.body.name, req.body.lastname);
+
+    res.json(true);
   }
 }
