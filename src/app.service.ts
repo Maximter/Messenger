@@ -6,6 +6,7 @@ import { getConnection, getRepository, Repository } from 'typeorm';
 import { access, constants } from 'fs';
 import { Chat } from 'entity/chat.entity';
 import { ChatInfo } from 'entity/chat.info.entity';
+import * as fs from 'fs';
 
 @Injectable()
 export class AppService {
@@ -43,20 +44,21 @@ export class AppService {
 
     const { password, online, ...user } = tokenEntity.user;
 
-    if (await AppService.existAvatar(user.id_user)) user.avatar = user.id_user;
+    if (
+      await AppService.checkFileExists(
+        `./public/img/avatar/${user.id_user}.jpg`,
+      )
+    )
+      user.avatar = user.id_user;
     else user.avatar = 'standard';
 
     return user;
   }
 
-  static async existAvatar(id): Promise<boolean> {
-    let exist: boolean;
-
-    await access(`./public/img/avatar/${id}.jpg`, (err) => {
-      if (err) exist = false;
-      else exist = true;
-    });
-
-    return exist;
+  static async checkFileExists(file) {
+    return fs.promises
+      .access(file, fs.constants.F_OK)
+      .then(() => true)
+      .catch(() => false);
   }
 }

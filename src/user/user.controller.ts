@@ -1,7 +1,18 @@
-import { Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  Res,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { AppService } from 'src/app.service';
 import { UserService } from './user.service';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -29,5 +40,20 @@ export class UserController {
     this.userService.change_name(user, req.body.name, req.body.lastname);
 
     res.json(true);
+  }
+
+  @Post('/changeAvatar')
+  @UseInterceptors(FileInterceptor('avatar', { dest: 'public/img/rowImg' }))
+  async changeAvatar(
+    @Req() req,
+    @Res() res: Response,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const user = await this.userService.getUser(req);
+
+    this.userService.change_avatar(user, file);
+
+    res.writeHead(302, { Location: '/' });
+    res.end();
   }
 }

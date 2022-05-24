@@ -7,6 +7,7 @@ import { Token } from 'entity/token.entity';
 import { User } from 'entity/user.entity';
 import { getConnection, getManager, getRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
 
 const saltForHash: number = 7;
 
@@ -61,5 +62,15 @@ export class UserService {
       name: name,
       lastname: lastname,
     });
+  }
+
+  async change_avatar(user, file): Promise<void> {
+    fs.rename(
+      `./public/img/rowImg/${file.filename}`,
+      `./public/img/avatar/${user.id_user}.jpg`,
+      function (err) {
+        if (err) console.log('ERROR: ' + err);
+      },
+    );
   }
 }

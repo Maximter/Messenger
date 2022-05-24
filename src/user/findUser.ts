@@ -20,8 +20,14 @@ export class FindUser {
 
     const { email, password, findCode, online, ...user } = foundUser;
 
-    if (await AppService.existAvatar(user.id_user)) user.avatar = user.id_user;
+    if (
+      await AppService.checkFileExists(
+        `./public/img/avatar/${user.id_user}.jpg`,
+      )
+    )
+      user.avatar = user.id_user;
     else user.avatar = 'standard';
+
     return user;
   }
 }
