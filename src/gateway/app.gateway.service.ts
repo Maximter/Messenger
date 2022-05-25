@@ -8,6 +8,7 @@ import * as online from '../online';
 import * as uuid from 'uuid';
 import { UrlWithStringQuery } from 'url';
 import { Message } from 'entity/message.entity';
+const fs = require('fs');
 
 export class SocketService {
   constructor(
@@ -94,7 +95,7 @@ export class SocketService {
     return online[`${interlocutor_token.token}`];
   }
 
-  async createChat(client, payload): Promise<string> {
+  async createChat(client, payload): Promise<object> {
     const message = payload[0].trim();
     const id_interlocutor = payload[1];
 
@@ -113,7 +114,7 @@ export class SocketService {
 
     const existed_chat = await this.checkExistchat(user, interlocutor);
 
-    if (existed_chat != '') return existed_chat;
+    if (existed_chat != '') return { id_chat: existed_chat, exist: true };
 
     const chat_id: string = await uuid.v4();
 
@@ -148,7 +149,7 @@ export class SocketService {
       await transactionalEntityManager.save(newChatInfo);
     });
 
-    return '';
+    return { id_chat: chat_id, exist: false };
   }
 
   async checkExistchat(user, interlocutor): Promise<string> {
@@ -259,6 +260,25 @@ export class SocketService {
     }
 
     return info;
+  }
+
+  async getUserInfo(client, payload) {
+    const token = await SocketService.getToken(client);
+    const tokenEntity = await getConnection()
+      .getRepository(Token)
+      .createQueryBuilder('token')
+      .leftJoinAndSelect('token.user', 'user')
+      .where('token.token = :token', { token: token })
+      .getOne();
+
+    const user = tokenEntity.user;
+    user['message'] = payload[0];
+    user['sender'] = true;
+    if (fs.existsSync(`./public/img/avatar/${user.id_user}.jpg`)) {
+      user['avatar'] = `img/avatar/${user.id_user}.jpg`;
+    } else user['avatar'] = `img/avatar/standard.jpg`;
+
+    return user;
   }
 
   static getToken(client): string {

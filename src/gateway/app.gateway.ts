@@ -25,8 +25,22 @@ export class AppGateway
   @SubscribeMessage('sendFirstMessage')
   async sendFirstMessage(client: Socket, payload: string): Promise<void> {
     const existed_chat = await this.socketService.createChat(client, payload);
-    if (existed_chat != '')
-      this.sendMessage(client, [payload[0], existed_chat]);
+    if (existed_chat['exist'])
+      this.sendMessage(client, [payload[0], existed_chat['id_chat']]);
+    else {
+      const token = await this.socketService.getInterlocutorsToken(
+        client,
+        existed_chat['id_chat'],
+      );
+      if (token == undefined) return;
+      const user = await this.socketService.getUserInfo(client, payload);
+
+      token.forEach((element) => {
+        this.server
+          .to(element)
+          .emit('addNewConversation', user, existed_chat['id_chat']);
+      });
+    }
   }
 
   @SubscribeMessage('sendMessage')
