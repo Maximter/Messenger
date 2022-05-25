@@ -61,9 +61,7 @@ export class SocketService {
     });
   }
 
-  async getIntercolorsToken(client, payload): Promise<string[]> {
-    const id_chat = payload[1];
-
+  async getIntercolorsToken(client, id_chat): Promise<string[]> {
     const my_token = await SocketService.getToken(client);
     const my_tokenEntity = await getConnection()
       .getRepository(Token)
@@ -96,7 +94,7 @@ export class SocketService {
     return online[`${interlocutor_token.token}`];
   }
 
-  async createChat(client, payload): Promise<void> {
+  async createChat(client, payload): Promise<boolean> {
     const message = payload[0].trim();
     const id_interlocutor = payload[1];
 
@@ -113,7 +111,7 @@ export class SocketService {
       where: { id_user: id_interlocutor },
     });
 
-    if (this.checkExistchat(user, interlocutor)) return;
+    if (this.checkExistchat(user, interlocutor)) return false;
 
     const chat_id: string = await uuid.v4();
 
@@ -140,6 +138,8 @@ export class SocketService {
 
       await transactionalEntityManager.save(newChatInfo);
     });
+
+    return true;
   }
 
   async checkExistchat(user, interlocutor): Promise<boolean> {

@@ -48,6 +48,33 @@ export class DialogService {
     return chats;
   }
 
+  async getIdChat(interlocutor, user): Promise<string> {
+    const userchatsEntity = await this.chatRepository.find({
+      where: { member: user },
+    });
+
+    let chats_id = [];
+    userchatsEntity.forEach((element) => {
+      chats_id.push(element.chat_id);
+    });
+
+    const idchatsEntity = await getRepository(Chat)
+      .createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.member', 'member')
+      .where('chat.chat_id IN (:...id)', { id: chats_id })
+      .getMany();
+
+    let chat_id;
+    for (let i = 0; i < idchatsEntity.length; i++) {
+      if (idchatsEntity[i].member.id_user == interlocutor) {
+        chat_id = idchatsEntity[i].chat_id;
+        break;
+      }
+    }
+
+    return chat_id;
+  }
+
   async getChatsInfo(user, id_chats): Promise<ChatInfo[]> {
     const id_user = user.id_user;
     const id: number[] = [];

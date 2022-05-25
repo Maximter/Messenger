@@ -23,16 +23,29 @@ export class AppGateway
 
   @SubscribeMessage('sendFirstMessage')
   async sendFirstMessage(client: Socket, payload: string): Promise<void> {
-    await this.socketService.createChat(client, payload);
+    if (!(await this.socketService.createChat(client, payload))) {
+    }
   }
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, payload: string): Promise<void> {
     this.socketService.saveMessageToDB(client, payload);
-    const token = await this.socketService.getIntercolorsToken(client, payload);
+    const token = await this.socketService.getIntercolorsToken(
+      client,
+      payload[1],
+    );
 
     token.forEach((element) => {
       this.server.to(element).emit('getMessage', payload[0], payload[1]);
+    });
+  }
+
+  @SubscribeMessage('isTyping')
+  async isTyping(client: Socket, payload: string): Promise<void> {
+    const token = await this.socketService.getIntercolorsToken(client, payload);
+
+    token.forEach((element) => {
+      this.server.to(element).emit('getTyping', payload);
     });
   }
 

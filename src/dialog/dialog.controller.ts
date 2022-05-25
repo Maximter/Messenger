@@ -30,6 +30,21 @@ export class DialogController {
     res.json(messages);
   }
 
+  @Get('/getMessagesById')
+  async sendMessagesById(@Req() req, @Res() res: Response, @Query() query) {
+    const user = await this.dialogService.getUser(req);
+    const id_chat = await this.dialogService.getIdChat(
+      req.query.id_user,
+      user.id_user,
+    );
+    const messages = await this.dialogService.getMessages(
+      id_chat,
+      user.id_user,
+    );
+
+    res.json(messages);
+  }
+
   @Get('/read')
   async read(@Req() req, @Res() res: Response, @Query() query) {
     const user = await this.dialogService.getUser(req);
