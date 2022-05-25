@@ -25,12 +25,8 @@ export class AppGateway
   @SubscribeMessage('sendFirstMessage')
   async sendFirstMessage(client: Socket, payload: string): Promise<void> {
     const existed_chat = await this.socketService.createChat(client, payload);
-    console.log(existed_chat);
-    const payload2 = [payload[0], existed_chat];
-    
-    if (existed_chat != '') {
-      this.sendMessage(client, [payload[0], existed_chat])
-    }
+
+    if (existed_chat != '') this.sendMessage(client, [payload[0], existed_chat]);
   }
 
   @SubscribeMessage('sendMessage')

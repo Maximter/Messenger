@@ -111,7 +111,7 @@ export class SocketService {
       where: { id_user: id_interlocutor },
     });
 
-    const existed_chat = await this.checkExistchat(user, interlocutor)
+    const existed_chat = await this.checkExistchat(user, interlocutor);
 
     if (existed_chat != '') return existed_chat;
 
@@ -159,8 +159,9 @@ export class SocketService {
       .where('chat.chat_id IN (:...id)', { id: userChats })
       .getMany();
 
-    for (let i = 0; i < membersTheChat.length; i++) 
-      if (membersTheChat[i].member.id_user == interlocutor.id_user) return membersTheChat[i].chat_id;  
+    for (let i = 0; i < membersTheChat.length; i++)
+      if (membersTheChat[i].member.id_user == interlocutor.id_user)
+        return membersTheChat[i].chat_id;
 
     return '';
   }
