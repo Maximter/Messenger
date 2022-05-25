@@ -49,6 +49,16 @@ export class AppGateway
     });
   }
 
+  @SubscribeMessage('read')
+  async read(client: Socket, payload: string): Promise<void> {
+    const token = await this.socketService.getIntercolorsToken(client, payload);
+    console.log(payload, token);
+
+    token.forEach((element) => {
+      this.server.to(element).emit('getRead', payload);
+    });
+  }
+
   afterInit(server: Server): void {
     this.logger.log('Init');
   }
