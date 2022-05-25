@@ -80,6 +80,7 @@ export class DialogService {
     const id: number[] = [];
 
     for (let i = 0; i < id_chats.length; i++) id.push(id_chats[i].chat_id);
+    if (id_chats.length == 0) return [];
 
     const chats = await getRepository(ChatInfo)
       .createQueryBuilder('chatInfo')

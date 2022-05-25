@@ -128,6 +128,13 @@ export class SocketService {
         member: interlocutor,
       });
 
+      this.messageRepository.save({
+        id_chat: chat_id,
+        content: message,
+        id_sender: user.id_user,
+        message_sent: `${Date.now()}`,
+      });
+
       await transactionalEntityManager.save(newChat1);
       await transactionalEntityManager.save(newChat2);
 
@@ -149,6 +156,8 @@ export class SocketService {
     const userEntityChats = await this.chatRepository.find({
       where: { member: user },
     });
+
+    if (userEntityChats.length == 0) return '';
 
     for (let i = 0; i < userEntityChats.length; i++)
       userChats.push(userEntityChats[i].chat_id);

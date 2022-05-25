@@ -25,8 +25,8 @@ export class AppGateway
   @SubscribeMessage('sendFirstMessage')
   async sendFirstMessage(client: Socket, payload: string): Promise<void> {
     const existed_chat = await this.socketService.createChat(client, payload);
-
-    if (existed_chat != '') this.sendMessage(client, [payload[0], existed_chat]);
+    if (existed_chat != '')
+      this.sendMessage(client, [payload[0], existed_chat]);
   }
 
   @SubscribeMessage('sendMessage')
@@ -45,6 +45,7 @@ export class AppGateway
 
   @SubscribeMessage('isTyping')
   async isTyping(client: Socket, payload: string): Promise<void> {
+    if (payload == null) return;
     const token = await this.socketService.getInterlocutorsToken(
       client,
       payload,
