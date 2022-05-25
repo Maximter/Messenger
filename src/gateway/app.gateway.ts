@@ -9,6 +9,7 @@ import {
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { SocketService } from './app.gateway.service';
+import * as online from '../online';
 
 @WebSocketGateway()
 export class AppGateway
@@ -30,7 +31,7 @@ export class AppGateway
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, payload: string): Promise<void> {
     this.socketService.saveMessageToDB(client, payload);
-    const token = await this.socketService.getIntercolorsToken(
+    const token = await this.socketService.getInterlocutorsToken(
       client,
       payload[1],
     );
@@ -42,7 +43,10 @@ export class AppGateway
 
   @SubscribeMessage('isTyping')
   async isTyping(client: Socket, payload: string): Promise<void> {
-    const token = await this.socketService.getIntercolorsToken(client, payload);
+    const token = await this.socketService.getInterlocutorsToken(
+      client,
+      payload,
+    );
 
     token.forEach((element) => {
       this.server.to(element).emit('getTyping', payload);
@@ -51,8 +55,10 @@ export class AppGateway
 
   @SubscribeMessage('read')
   async read(client: Socket, payload: string): Promise<void> {
-    const token = await this.socketService.getIntercolorsToken(client, payload);
-    console.log(payload, token);
+    const token = await this.socketService.getInterlocutorsToken(
+      client,
+      payload,
+    );
 
     token.forEach((element) => {
       this.server.to(element).emit('getRead', payload);
@@ -63,11 +69,37 @@ export class AppGateway
     this.logger.log('Init');
   }
 
-  handleDisconnect(client: Socket): void {
+  async handleDisconnect(client: Socket): Promise<void> {
     this.socketService.deleteFromOnline(client);
+    const interlocutors = await this.socketService.getAllUserInterlocutors(
+      client,
+    );
+
+    interlocutors.forEach((element) => {
+      if (online[`${element['token']}`]) {
+        for (let i = 0; i < online[`${element['token']}`].length; i++) {
+          this.server
+            .to(online[`${element['token']}`][i])
+            .emit('changeStatus', interlocutors[i]['id_chat'], 'delete');
+        }
+      }
+    });
   }
 
-  handleConnection(client: Socket): void {
+  async handleConnection(client: Socket): Promise<void> {
     this.socketService.pushToOnline(client);
+    const interlocutors = await this.socketService.getAllUserInterlocutors(
+      client,
+    );
+
+    interlocutors.forEach((element) => {
+      if (online[`${element['token']}`]) {
+        for (let i = 0; i < online[`${element['token']}`].length; i++) {
+          this.server
+            .to(online[`${element['token']}`][i])
+            .emit('changeStatus', interlocutors[i]['id_chat'], 'add');
+        }
+      }
+    });
   }
 }

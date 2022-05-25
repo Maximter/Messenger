@@ -61,7 +61,7 @@ export class SocketService {
     });
   }
 
-  async getIntercolorsToken(client, id_chat): Promise<string[]> {
+  async getInterlocutorsToken(client, id_chat): Promise<string[]> {
     const my_token = await SocketService.getToken(client);
     const my_tokenEntity = await getConnection()
       .getRepository(Token)
@@ -214,6 +214,52 @@ export class SocketService {
       id_user: id_user,
       online: `${Date.now()}`,
     });
+  }
+
+  async getAllUserInterlocutors(client): Promise<object[]> {
+    const my_token = await SocketService.getToken(client);
+    const my_tokenEntity = await getConnection()
+      .getRepository(Token)
+      .createQueryBuilder('token')
+      .leftJoinAndSelect('token.user', 'user')
+      .where('token.token = :token', { token: my_token })
+      .getOne();
+
+    const user = my_tokenEntity.user;
+    const userchats = await getConnection()
+      .getRepository(Chat)
+      .createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.member', 'member')
+      .where('chat.member = :member', { member: user.id_user })
+      .getMany();
+
+    let info = [];
+
+    for (let i = 0; i < userchats.length; i++) {
+      const chats = await getConnection()
+        .getRepository(Chat)
+        .createQueryBuilder('chat')
+        .leftJoinAndSelect('chat.member', 'member')
+        .where('chat.chat_id = :id', { id: userchats[i].chat_id })
+        .getMany();
+
+      chats.forEach((element) => {
+        if (element.member.id_user != user.id_user)
+          info.push({
+            id_user: element.member.id_user,
+            id_chat: element.chat_id,
+          });
+      });
+    }
+
+    for (let i = 0; i < info.length; i++) {
+      const interlocutor_token = await this.tokenRepository.findOne({
+        where: { user: info[i].id_user },
+      });
+      info[i]['token'] = interlocutor_token.token;
+    }
+
+    return info;
   }
 
   static getToken(client): string {
