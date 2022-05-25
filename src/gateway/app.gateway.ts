@@ -24,17 +24,23 @@ export class AppGateway
 
   @SubscribeMessage('sendFirstMessage')
   async sendFirstMessage(client: Socket, payload: string): Promise<void> {
-    if (!(await this.socketService.createChat(client, payload))) {
+    const existed_chat = await this.socketService.createChat(client, payload);
+    console.log(existed_chat);
+    const payload2 = [payload[0], existed_chat];
+    
+    if (existed_chat != '') {
+      this.sendMessage(client, [payload[0], existed_chat])
     }
   }
 
   @SubscribeMessage('sendMessage')
-  async sendMessage(client: Socket, payload: string): Promise<void> {
+  async sendMessage(client: Socket, payload: string[]): Promise<void> {
     this.socketService.saveMessageToDB(client, payload);
     const token = await this.socketService.getInterlocutorsToken(
       client,
       payload[1],
     );
+    if (token == undefined) return;
 
     token.forEach((element) => {
       this.server.to(element).emit('getMessage', payload[0], payload[1]);
@@ -47,6 +53,7 @@ export class AppGateway
       client,
       payload,
     );
+    if (token == undefined) return;
 
     token.forEach((element) => {
       this.server.to(element).emit('getTyping', payload);
@@ -59,6 +66,7 @@ export class AppGateway
       client,
       payload,
     );
+    if (token == undefined) return;
 
     token.forEach((element) => {
       this.server.to(element).emit('getRead', payload);
@@ -74,6 +82,7 @@ export class AppGateway
     const interlocutors = await this.socketService.getAllUserInterlocutors(
       client,
     );
+    if (interlocutors == undefined) return;
 
     interlocutors.forEach((element) => {
       if (online[`${element['token']}`]) {
@@ -91,6 +100,7 @@ export class AppGateway
     const interlocutors = await this.socketService.getAllUserInterlocutors(
       client,
     );
+    if (interlocutors == undefined) return;
 
     interlocutors.forEach((element) => {
       if (online[`${element['token']}`]) {

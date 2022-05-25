@@ -94,7 +94,7 @@ export class SocketService {
     return online[`${interlocutor_token.token}`];
   }
 
-  async createChat(client, payload): Promise<boolean> {
+  async createChat(client, payload): Promise<string> {
     const message = payload[0].trim();
     const id_interlocutor = payload[1];
 
@@ -111,7 +111,9 @@ export class SocketService {
       where: { id_user: id_interlocutor },
     });
 
-    if (this.checkExistchat(user, interlocutor)) return false;
+    const existed_chat = await this.checkExistchat(user, interlocutor)
+
+    if (existed_chat != '') return existed_chat;
 
     const chat_id: string = await uuid.v4();
 
@@ -139,10 +141,10 @@ export class SocketService {
       await transactionalEntityManager.save(newChatInfo);
     });
 
-    return true;
+    return '';
   }
 
-  async checkExistchat(user, interlocutor): Promise<boolean> {
+  async checkExistchat(user, interlocutor): Promise<string> {
     const userChats = [];
     const userEntityChats = await this.chatRepository.find({
       where: { member: user },
@@ -153,27 +155,14 @@ export class SocketService {
 
     const membersTheChat = await getRepository(Chat)
       .createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.member', 'member')
       .where('chat.chat_id IN (:...id)', { id: userChats })
       .getMany();
 
-    for (let i = 0; i < membersTheChat.length; i++) {
-      const chatEntity = await getConnection()
-        .getRepository(Chat)
-        .createQueryBuilder('chat')
-        .leftJoinAndSelect('chat.member', 'member')
-        .where('chat.chat_id = :chat_id', {
-          chat_id: membersTheChat[i].chat_id,
-        })
-        .getOne();
-      console.log(chatEntity);
-    }
+    for (let i = 0; i < membersTheChat.length; i++) 
+      if (membersTheChat[i].member.id_user == interlocutor.id_user) return membersTheChat[i].chat_id;  
 
-    // if (membersTheChat[i] == interlocutor.id_user) return true
-
-    // console.log(membersTheChat);
-    console.log(interlocutor.id_user);
-
-    return true;
+    return '';
   }
 
   async pushToOnline(client): Promise<void> {
