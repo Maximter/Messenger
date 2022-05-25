@@ -14,6 +14,9 @@ export class SocketService {
     @InjectRepository(User)
     private userRepository: Repository<User>,
 
+    @InjectRepository(Token)
+    private tokenRepository: Repository<Token>,
+
     @InjectRepository(Chat)
     private chatRepository: Repository<Chat>,
 
@@ -56,6 +59,41 @@ export class SocketService {
       id_sender: user.id_user,
       message_sent: date,
     });
+  }
+
+  async getIntercolorsToken(client, payload): Promise<string[]> {
+    const id_chat = payload[1];
+
+    const my_token = await SocketService.getToken(client);
+    const my_tokenEntity = await getConnection()
+      .getRepository(Token)
+      .createQueryBuilder('token')
+      .leftJoinAndSelect('token.user', 'user')
+      .where('token.token = :token', { token: my_token })
+      .getOne();
+
+    const user = my_tokenEntity.user;
+
+    const members = await getConnection()
+      .getRepository(Chat)
+      .createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.member', 'member')
+      .where('chat.chat_id = :id', { id: id_chat })
+      .getMany();
+
+    let interlocutor;
+
+    for (let i = 0; i < members.length; i++) {
+      if (members[i].member.id_user != user.id_user) {
+        interlocutor = members[i].member;
+        break;
+      }
+    }
+    const interlocutor_token = await this.tokenRepository.findOne({
+      where: { user: interlocutor },
+    });
+
+    return online[`${interlocutor_token.token}`];
   }
 
   async createChat(client, payload): Promise<void> {

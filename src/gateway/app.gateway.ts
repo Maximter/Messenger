@@ -28,7 +28,12 @@ export class AppGateway
 
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, payload: string): Promise<void> {
-    await this.socketService.saveMessageToDB(client, payload);
+    this.socketService.saveMessageToDB(client, payload);
+    const token = await this.socketService.getIntercolorsToken(client, payload);
+
+    token.forEach((element) => {
+      this.server.to(element).emit('getMessage', payload[0], payload[1]);
+    });
   }
 
   afterInit(server: Server): void {
@@ -43,5 +48,3 @@ export class AppGateway
     this.socketService.pushToOnline(client);
   }
 }
-
-// this.server.emit('msgToClient', payload);
