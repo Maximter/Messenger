@@ -58,6 +58,8 @@ export class DialogService {
       chats_id.push(element.chat_id);
     });
 
+    if (chats_id.length == 0) return;
+
     const idchatsEntity = await getRepository(Chat)
       .createQueryBuilder('chat')
       .leftJoinAndSelect('chat.member', 'member')

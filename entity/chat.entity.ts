@@ -7,6 +7,7 @@ import {
     JoinColumn,
     PrimaryColumn,
     ManyToOne,
+    OneToMany,
   } from 'typeorm';
   import { User } from './user.entity';
   
@@ -18,7 +19,7 @@ import {
     @Column({ length : 65 })
     chat_id : string;
   
-    @OneToOne(() => User)
+    @ManyToOne(type => User, (user) => user.id_user)
     @JoinColumn()
     member: User;
 

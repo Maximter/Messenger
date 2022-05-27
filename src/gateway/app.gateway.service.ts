@@ -95,6 +95,21 @@ export class SocketService {
     return online[`${interlocutor_token.token}`];
   }
 
+  async getInterlocutorsInfo(id, message): Promise<object> {
+    const interlocutor = await this.userRepository.findOne({
+      where: { id_user: id },
+    });
+
+    if (fs.existsSync(`./public/img/avatar/${interlocutor.id_user}.jpg`)) {
+      interlocutor['avatar'] = `img/avatar/${interlocutor.id_user}.jpg`;
+    } else interlocutor['avatar'] = `img/avatar/standard.jpg`;
+
+    interlocutor['sender'] = true;
+    interlocutor['message'] = message;
+
+    return interlocutor;
+  }
+
   async createChat(client, payload): Promise<object> {
     const message = payload[0].trim();
     const id_interlocutor = payload[1];
@@ -126,6 +141,7 @@ export class SocketService {
 
       const newChat2: Chat = this.chatRepository.create({
         chat_id: chat_id,
+        unread: 1,
         member: interlocutor,
       });
 
@@ -150,6 +166,13 @@ export class SocketService {
     });
 
     return { id_chat: chat_id, exist: false };
+  }
+
+  async getUserTokens(client): Promise<string[]> {
+    const my_token = await SocketService.getToken(client);
+    
+    if (online[`${my_token}`] != undefined) return online[`${my_token}`];
+    else return []
   }
 
   async checkExistchat(user, interlocutor): Promise<string> {
@@ -191,7 +214,7 @@ export class SocketService {
 
     const id_user = tokenEntity.user.id_user;
     this.userRepository.save({
-      id_user: id_user,
+      id_user: id_user, 
       online: `0`,
     });
   }
@@ -273,7 +296,7 @@ export class SocketService {
 
     const user = tokenEntity.user;
     user['message'] = payload[0];
-    user['sender'] = true;
+    user['sender'] = false;
     if (fs.existsSync(`./public/img/avatar/${user.id_user}.jpg`)) {
       user['avatar'] = `img/avatar/${user.id_user}.jpg`;
     } else user['avatar'] = `img/avatar/standard.jpg`;

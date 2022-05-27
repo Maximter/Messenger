@@ -28,14 +28,22 @@ export class AppGateway
     if (existed_chat['exist'])
       this.sendMessage(client, [payload[0], existed_chat['id_chat']]);
     else {
-      const token = await this.socketService.getInterlocutorsToken(
+      const interlocutorInfo = await this.socketService.getInterlocutorsInfo(payload[1], payload[0]);
+      const userTokens = await this.socketService.getUserTokens(client);
+      userTokens.forEach(element => {
+        this.server
+          .to(element)
+          .emit('addNewConversation', interlocutorInfo, existed_chat['id_chat']);
+      });
+
+      const interlocutorToken = await this.socketService.getInterlocutorsToken(
         client,
         existed_chat['id_chat'],
       );
-      if (token == undefined) return;
+      if (interlocutorToken == undefined) return;
       const user = await this.socketService.getUserInfo(client, payload);
-
-      token.forEach((element) => {
+      
+      interlocutorToken.forEach((element) => {
         this.server
           .to(element)
           .emit('addNewConversation', user, existed_chat['id_chat']);
