@@ -3,7 +3,6 @@ import {
   Get,
   Req,
   Res,
-  Render,
   Param,
   Query,
 } from '@nestjs/common';

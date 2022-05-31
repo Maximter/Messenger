@@ -1,8 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Chat } from 'entity/chat.entity';
-import { ChatInfo } from 'entity/chat.info.entity';
-import { Message } from 'entity/message.entity';
 import { Token } from 'entity/token.entity';
 import { User } from 'entity/user.entity';
 import { getConnection, getManager, getRepository, Repository } from 'typeorm';
@@ -16,18 +13,6 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-
-    @InjectRepository(Token)
-    private tokenRepository: Repository<Token>,
-
-    @InjectRepository(Chat)
-    private chatRepository: Repository<Chat>,
-
-    @InjectRepository(ChatInfo)
-    private chatInfoRepository: Repository<ChatInfo>,
-
-    @InjectRepository(Message)
-    private messageRepository: Repository<Message>,
   ) {}
 
   async getUser(req): Promise<User> {
