@@ -20,6 +20,7 @@ export class UserController {
     private readonly appService: AppService,
   ) {}
 
+  // запрос на смену пароля
   @Post('/changePassword')
   async changePassword(@Req() req, @Res() res: Response, @Query() query) {
     const user = await this.userService.getUser(req);
@@ -33,6 +34,7 @@ export class UserController {
     res.json(valid_password);
   }
 
+  // запрос на смену имени
   @Post('/changeName')
   async changeName(@Req() req, @Res() res: Response, @Query() query) {
     const user = await this.userService.getUser(req);
@@ -41,7 +43,9 @@ export class UserController {
     res.json(true);
   }
 
+  // запрос на смену аватара
   @Post('/changeAvatar')
+  // загрузка фото
   @UseInterceptors(FileInterceptor('avatar', { dest: 'public/img/rowImg' }))
   async changeAvatar(
     @Req() req,

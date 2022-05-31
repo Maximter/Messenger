@@ -45,6 +45,7 @@ export class SignupService {
     return 'okay';
   }
 
+  // функция регистрации
   async signup(body): Promise<void> {
     const email: string = body.email.trim(),
       name: string = body.name.trim(),
@@ -54,6 +55,7 @@ export class SignupService {
     const hashPassword: string = await bcrypt.hash(password, saltForHash);
     const findCode: string = await SignupService.getRandomString(6);
 
+    // открытие транзакции
     await getManager().transaction(async (transactionalEntityManager) => {
       const newUser: User = this.userRepository.create({
         email: email,
@@ -74,6 +76,7 @@ export class SignupService {
     });
   }
 
+  // получение find code
   static getRandomString(length): string {
     let simbols = 'abcdefghijklmnopqrstuvwxyz0123456789';
     let rs = '';

@@ -22,18 +22,26 @@ export class AppGateway
 
   private logger: Logger = new Logger('AppGateway');
 
+  // отправка первого сообщения пользователю
   @SubscribeMessage('sendFirstMessage')
   async sendFirstMessage(client: Socket, payload: string): Promise<void> {
     const existed_chat = await this.socketService.createChat(client, payload);
     if (existed_chat['exist'])
       this.sendMessage(client, [payload[0], existed_chat['id_chat']]);
     else {
-      const interlocutorInfo = await this.socketService.getInterlocutorsInfo(payload[1], payload[0]);
+      const interlocutorInfo = await this.socketService.getInterlocutorsInfo(
+        payload[1],
+        payload[0],
+      );
       const userTokens = await this.socketService.getUserTokens(client);
-      userTokens.forEach(element => {
+      userTokens.forEach((element) => {
         this.server
           .to(element)
-          .emit('addNewConversation', interlocutorInfo, existed_chat['id_chat']);
+          .emit(
+            'addNewConversation',
+            interlocutorInfo,
+            existed_chat['id_chat'],
+          );
       });
 
       const interlocutorToken = await this.socketService.getInterlocutorsToken(
@@ -42,7 +50,7 @@ export class AppGateway
       );
       if (interlocutorToken == undefined) return;
       const user = await this.socketService.getUserInfo(client, payload);
-      
+
       interlocutorToken.forEach((element) => {
         this.server
           .to(element)
@@ -51,6 +59,7 @@ export class AppGateway
     }
   }
 
+  // отправка сообщения
   @SubscribeMessage('sendMessage')
   async sendMessage(client: Socket, payload: string[]): Promise<void> {
     this.socketService.saveMessageToDB(client, payload);
@@ -65,6 +74,7 @@ export class AppGateway
     });
   }
 
+  // пользователь печатает
   @SubscribeMessage('isTyping')
   async isTyping(client: Socket, payload: string): Promise<void> {
     if (payload == null) return;
@@ -79,6 +89,7 @@ export class AppGateway
     });
   }
 
+  // пользователь прочитал сообщение
   @SubscribeMessage('read')
   async read(client: Socket, payload: string): Promise<void> {
     const token = await this.socketService.getInterlocutorsToken(
@@ -96,6 +107,7 @@ export class AppGateway
     this.logger.log('Init');
   }
 
+  // пользователь отключился
   async handleDisconnect(client: Socket): Promise<void> {
     this.socketService.deleteFromOnline(client);
     const interlocutors = await this.socketService.getAllUserInterlocutors(
@@ -114,6 +126,7 @@ export class AppGateway
     });
   }
 
+  // пользователь вошел в сеть
   async handleConnection(client: Socket): Promise<void> {
     this.socketService.pushToOnline(client);
     const interlocutors = await this.socketService.getAllUserInterlocutors(

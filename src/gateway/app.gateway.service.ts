@@ -170,9 +170,9 @@ export class SocketService {
 
   async getUserTokens(client): Promise<string[]> {
     const my_token = await SocketService.getToken(client);
-    
+
     if (online[`${my_token}`] != undefined) return online[`${my_token}`];
-    else return []
+    else return [];
   }
 
   async checkExistchat(user, interlocutor): Promise<string> {
@@ -214,7 +214,7 @@ export class SocketService {
 
     const id_user = tokenEntity.user.id_user;
     this.userRepository.save({
-      id_user: id_user, 
+      id_user: id_user,
       online: `0`,
     });
   }

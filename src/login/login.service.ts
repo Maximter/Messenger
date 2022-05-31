@@ -15,6 +15,7 @@ export class LoginService {
     private tokenRepository: Repository<Token>,
   ) {}
 
+  // проверка на правильно введенные данные
   async checkRightData(body): Promise<boolean> {
     const email = body.email.trim(),
       password = body.password.trim();
@@ -27,6 +28,7 @@ export class LoginService {
     else return false;
   }
 
+  // получение токена пользователя
   async getToken(body): Promise<string> {
     const email = body.email.trim();
 

@@ -11,6 +11,7 @@ export class FindUser {
     private userRepository: Repository<User>,
   ) {}
 
+  // функция поиск пользователя
   async findUser(findCodeClient) {
     const foundUser = await this.userRepository.findOne({
       where: { findCode: findCodeClient },
@@ -20,6 +21,7 @@ export class FindUser {
 
     const { email, password, findCode, online, ...user } = foundUser;
 
+    // поиск аватара
     if (
       await AppService.checkFileExists(
         `./public/img/avatar/${user.id_user}.jpg`,

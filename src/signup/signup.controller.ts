@@ -6,12 +6,14 @@ import { SignupService } from './signup.service';
 export class SignupController {
   constructor(private readonly signupService: SignupService) {}
 
+  // получение страницы регистрации
   @Get()
   async renderSignup(@Req() req, @Res() res: Response) {
     res.clearCookie('token_rf');
     return res.render('signup');
   }
 
+  // отправка данных на регистрацию
   @Post()
   async signupUser(@Body() body: Body, @Res() res: Response) {
     let answer = await this.signupService.checkData(body);

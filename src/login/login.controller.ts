@@ -6,17 +6,20 @@ import { LoginService } from './login.service';
 export class LoginController {
   constructor(private readonly loginService: LoginService) {}
 
+  // запрос на страницу входа
   @Get()
   async renderLogin(@Req() req, @Res() res: Response) {
     res.clearCookie('token_rf');
     return res.render('login');
   }
 
+  // запрос на вход
   @Post()
   async loginUser(@Body() body: Body, @Res() res: Response) {
     const rightData: boolean = await this.loginService.checkRightData(body);
 
     if (rightData) {
+      // установка токена
       res.cookie('token_rf', await this.loginService.getToken(body), {
         httpOnly: true,
       });

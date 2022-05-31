@@ -16,6 +16,7 @@ export class LoggerMiddleware implements NestMiddleware {
     private tokenRepository: Repository<Token>,
   ) {}
 
+  // проверка авторизованности при каждом запросе
   async use(req: Request, res: Response, next: NextFunction) {
     const tokenClient = req.cookies.token_rf;
 

@@ -18,6 +18,7 @@ export class DialogService {
     private messageRepository: Repository<Message>,
   ) {}
 
+  // получение данных о пользователе
   async getUser(req): Promise<User> {
     const tokenEntity = await getConnection()
       .getRepository(Token)
@@ -31,6 +32,7 @@ export class DialogService {
     return tokenEntity.user;
   }
 
+  // получение id диалогов
   async getIdChats(user): Promise<Chat[]> {
     const chats = await this.chatRepository.find({
       where: { member: user },
@@ -39,7 +41,8 @@ export class DialogService {
     return chats;
   }
 
-  async getIdChat(interlocutor, user): Promise<string> {
+  // поиск диалога по id собеседника
+  async getChatById(interlocutor, user): Promise<string> {
     const userchatsEntity = await this.chatRepository.find({
       where: { member: user },
     });
@@ -68,6 +71,7 @@ export class DialogService {
     return chat_id;
   }
 
+  // получение информации о диалоге
   async getChatsInfo(user, id_chats): Promise<ChatInfo[]> {
     const id_user = user.id_user;
     const id: number[] = [];
@@ -112,6 +116,7 @@ export class DialogService {
     return chats;
   }
 
+  // получение сообщений из диалога
   async getMessages(id_chat, id_user): Promise<Message[]> {
     const messages = await this.messageRepository.find({
       where: { id_chat: id_chat },
@@ -125,6 +130,7 @@ export class DialogService {
     return messages;
   }
 
+  // функция читания сообщения
   async readMessage(id_chat, id_user): Promise<void> {
     const chatsEntity = await getConnection()
       .getRepository(Chat)
@@ -143,6 +149,7 @@ export class DialogService {
     });
   }
 
+  // функция которая отправляется собеседнику, что он не прочитал сообщение
   async unreadMessage(id_chat, id_user): Promise<void> {
     const chatsEntity = await getConnection()
       .getRepository(Chat)

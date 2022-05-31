@@ -15,6 +15,7 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
+  // получение данных о пользователе
   async getUser(req): Promise<User> {
     const tokenEntity = await getConnection()
       .getRepository(Token)
@@ -28,10 +29,12 @@ export class UserService {
     return tokenEntity.user;
   }
 
+  // проверка пароля на валидность
   async check_valid_password(user, old_password): Promise<boolean> {
     return await bcrypt.compare(old_password, user.password);
   }
 
+  // функция изменения пароля
   async change_password(user, new_password): Promise<void> {
     const hashPassword: string = await bcrypt.hash(new_password, saltForHash);
 
@@ -41,6 +44,7 @@ export class UserService {
     });
   }
 
+  // функция изменения имени
   async change_name(user, name, lastname): Promise<void> {
     this.userRepository.save({
       id_user: user.id_user,
@@ -49,6 +53,7 @@ export class UserService {
     });
   }
 
+  // функция изменения аватара
   async change_avatar(user, file): Promise<void> {
     fs.rename(
       `./public/img/rowImg/${file.filename}`,

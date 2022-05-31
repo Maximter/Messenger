@@ -11,6 +11,7 @@ export class AppService {
     private tokenRepository: Repository<Token>,
   ) {}
 
+  //функция проверки валидности токена
   async checkToken(req): Promise<boolean> {
     const tokenClient = req.cookies.token_rf;
 
@@ -22,6 +23,7 @@ export class AppService {
     else return true;
   }
 
+  // получение данных о пользователе
   async getUserData(req): Promise<object> {
     const tokenEntity = await getConnection()
       .getRepository(Token)
@@ -45,6 +47,7 @@ export class AppService {
     return user;
   }
 
+  // проверка на существование аватара пользователя
   static async checkFileExists(file) {
     return fs.promises
       .access(file, fs.constants.F_OK)
