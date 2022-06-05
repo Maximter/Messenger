@@ -9,7 +9,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { AppService } from 'src/app.service';
 import { UserService } from './user.service';
 import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -20,8 +19,12 @@ export class UserController {
 
   // поиск пользователя
   @Get('/find')
-  async sendUser(@Res() res: Response, @Query() query) {
-    res.json(await this.userService.findUser(query.findCode));
+  async sendUser(@Req() req, @Res() res: Response, @Query() query) {
+    const user = await this.userService.getUser(req);
+    const findUser = await this.userService.findUser(query.findCode);
+    if (user.findCode == findUser.findCode) return;
+    
+    res.json(findUser);
   }
 
   // запрос на смену пароля

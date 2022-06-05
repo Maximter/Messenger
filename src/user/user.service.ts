@@ -72,7 +72,7 @@ export class UserService {
 
     if (foundUser == undefined) return undefined;
 
-    const { email, password, findCode, online, ...user } = foundUser;
+    const { email, password, online, ...user } = foundUser;
 
     // поиск аватара
     if (
