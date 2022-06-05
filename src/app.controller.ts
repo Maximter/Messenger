@@ -1,14 +1,10 @@
 import { Controller, Get, Req, Res, Param, Query } from '@nestjs/common';
 import { Response } from 'express';
 import { AppService } from './app.service';
-import { FindUser } from './user/findUser';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private readonly findUser: FindUser,
-  ) {}
+  constructor(private readonly appService: AppService) {}
 
   // обработчик на запрос главной страницы
   @Get()
@@ -21,11 +17,5 @@ export class AppController {
 
     // отправка данных
     return res.render('index', { user: user });
-  }
-
-  // поиск пользователя
-  @Get('/findUser')
-  async sendUser(@Res() res: Response, @Query() query, @Param() params) {
-    res.json(await this.findUser.findUser(query.findCode));
   }
 }

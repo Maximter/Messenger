@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Post,
   Query,
   Req,
@@ -15,10 +16,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private readonly appService: AppService,
-  ) {}
+  constructor(private readonly userService: UserService) {}
+
+  // поиск пользователя
+  @Get('/find')
+  async sendUser(@Res() res: Response, @Query() query) {
+    res.json(await this.userService.findUser(query.findCode));
+  }
 
   // запрос на смену пароля
   @Post('/changePassword')

@@ -8,7 +8,7 @@ export class LoginController {
 
   // запрос на страницу входа
   @Get()
-  async renderLogin(@Req() req, @Res() res: Response) {
+  async renderLogin(@Res() res: Response) {
     res.clearCookie('token_rf');
     return res.render('login');
   }

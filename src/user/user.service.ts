@@ -63,4 +63,34 @@ export class UserService {
       },
     );
   }
+
+  // функция поиск пользователя
+  async findUser(findCodeClient) {
+    const foundUser = await this.userRepository.findOne({
+      where: { findCode: findCodeClient },
+    });
+
+    if (foundUser == undefined) return undefined;
+
+    const { email, password, findCode, online, ...user } = foundUser;
+
+    // поиск аватара
+    if (
+      await UserService.checkFileExists(
+        `./public/img/avatar/${user.id_user}.jpg`,
+      )
+    )
+      user.avatar = user.id_user;
+    else user.avatar = 'standard';
+
+    return user;
+  }
+
+  // проверка на существование аватара пользователя
+  static async checkFileExists(file) {
+    return fs.promises
+      .access(file, fs.constants.F_OK)
+      .then(() => true)
+      .catch(() => false);
+  }
 }
