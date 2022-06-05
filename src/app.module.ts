@@ -9,7 +9,6 @@ import { SocketService } from './gateway/app.gateway.service';
 import { LoginModule } from './login/login.module';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { SignupModule } from './signup/signup.module';
-import { FindUser } from './user/findUser';
 import { DialogModule } from './dialog/dialog.module';
 import { Chat } from 'entity/chat.entity';
 import { ChatInfo } from 'entity/chat.info.entity';
@@ -26,7 +25,7 @@ import { UserModule } from './user/user.module';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SocketService, FindUser, AppGateway],
+  providers: [AppService, SocketService, AppGateway],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
